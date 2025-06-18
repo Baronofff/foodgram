@@ -5,11 +5,8 @@ from rest_framework import filters as drf_filters
 
 
 class RecipeFilter(filters.FilterSet):
-    """Фильтр для рецептов с возможностью фильтрации по:
-    - Наличию в списке покупок
-    - Наличию в избранном
-    - Тегам (множественный выбор)
-    - Автору
+    """Фильтр рецептов с возможностью фильтрации по
+    наличию в списке покупок, избранном, по тегам и автору.
     """
 
     is_in_shopping_cart = django_filters.CharFilter(
@@ -28,18 +25,20 @@ class RecipeFilter(filters.FilterSet):
         fields = ("tags", "author", "is_in_shopping_cart", "is_favorited")
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        author = self.request.author
+        """Фильтр по факту наличия в корзине"""
+        author = self.request.user
         if value and author.is_authenticated:
-            return queryset.filter(cart_recipes__author=author)
+            return queryset.filter(in_carts__user=author)
         return queryset
 
     def filter_is_favorited(self, queryset, name, value):
-        author = self.request.author
+        """Фильтр по факту наличия в избранном"""
+        author = self.request.user
         if value and author.is_authenticated:
-            return queryset.filter(favorite_recipes__author=author)
+            return queryset.filter(in_favorites__user=author)
         return queryset
 
 
 class IngredientSearchFilter(drf_filters.SearchFilter):
-    """Фильтр для поиска ингредиентов по названию."""
+    """Фильтр ингредиентов по названию"""
     search_param = 'name'

@@ -1,11 +1,12 @@
-import unidecode
 import secrets
 import string
+
+import unidecode
 from api.constants import (MAX_LENGTH_INGREDIENT_NAME,
                            MAX_LENGTH_MEASUREMENT_UNIT, MAX_LENGTH_RECIPE_NAME,
-                           MAX_LENGTH_TAG_NAME, MAX_LENGTH_TAG_SLUG,
-                           MIN_COOKING_TIME, MIN_INGREDIENT_AMOUNT,
-                           MAX_LENGTH_SHORT_LINK)
+                           MAX_LENGTH_SHORT_LINK, MAX_LENGTH_TAG_NAME,
+                           MAX_LENGTH_TAG_SLUG, MIN_COOKING_TIME,
+                           MIN_INGREDIENT_AMOUNT)
 from autoslug import AutoSlugField
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -30,7 +31,8 @@ class Ingredient(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'measurement_unit'],
+                fields=['name',
+                        'measurement_unit'],
                 name='unique_ingredient_and_name_measurement'
             )
         ]
@@ -89,9 +91,10 @@ class Recipe(models.Model):
 
     def generate_short_link(self):
         "Генерирует уникальный короткий ключ"
-        length = 6
+        length = MAX_LENGTH_SHORT_LINK
         while True:
-            slug = ''.join(secrets.choice(string.ascii_lowercase + string.digits) for _ in range(length))
+            slug = ''.join(secrets.choice(
+                string.ascii_lowercase + string.digits) for _ in range(length))
             if not Recipe.objects.filter(short_link=slug).exists():
                 return slug
 

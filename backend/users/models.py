@@ -21,7 +21,6 @@ class User(AbstractUser):
         upload_to='avatars/',
         null=True,
         blank=True,
-        # verbose_name='Avatar'
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -50,7 +49,7 @@ class Subscription(models.Model):
             ),
             models.CheckConstraint(
                 name='subscription_for_yourself_is_not_allowed',
-                check=~models.Q(author=models.F('author')),
+                check=~models.Q(author=models.F('subscribers')),
             )
         ]
 
