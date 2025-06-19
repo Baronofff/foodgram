@@ -12,7 +12,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    image: baronofff/foodram_backend
+    image: baronofff/foodgram_backend
     env_file: .env
     volumes:
       - static:/static
@@ -21,12 +21,12 @@ services:
       - db
   frontend:
     env_file: .env
-    image: baronofff/foodram_frontend
+    image: baronofff/foodgram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
-    image: baronofff/foodram_nginx
+    image: baronofff/foodgram_nginx
     env_file: .env
     ports:
       - 8000:80
