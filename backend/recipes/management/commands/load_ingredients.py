@@ -8,10 +8,11 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-    help = 'Импортирует ингредиенты из CSV-файла'
+    help = 'Загружает ингредиенты из CSV-файла'
 
     def handle(self, *args, **kwargs):
-        file_path = os.path.join(settings.BASE_DIR, 'fixtures/ingredients.csv')
+        file_path = os.path.join(settings.BASE_DIR,
+                                 'fixtures/ingredients_with_headers.csv')
 
         if not os.path.exists(file_path):
             self.stdout.write(self.style.ERROR(f'Файл не найден: {file_path}'))
@@ -33,6 +34,6 @@ class Command(BaseCommand):
                     skipped += 1
         self.stdout.write(
             self.style.SUCCESS(
-                f'Импорт завершён: добавлено {added}, пропущено {skipped}.'
+                f'Загрузка закончена: добавлено {added}, пропущено {skipped}.'
             )
         )
