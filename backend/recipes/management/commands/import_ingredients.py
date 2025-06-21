@@ -22,8 +22,8 @@ class Command(BaseCommand):
             added = 0
             skipped = 0
             for row in reader:
-                name = row['name']
-                unit = row['measurement_unit']
+                name = row[0]
+                unit = row[1]
                 obj, created = Ingredient.objects.get_or_create(
                     name=name, measurement_unit=unit
                 )
