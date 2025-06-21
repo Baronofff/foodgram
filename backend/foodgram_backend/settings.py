@@ -165,3 +165,12 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://foodgramcom.zapto.org',
+    'http://localhost',
+    'http://127.0.0.1'
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
