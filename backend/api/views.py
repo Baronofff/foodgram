@@ -96,14 +96,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=['post'],
         permission_classes=[IsAuthenticated],
-        url_path='(?P<type>favorite|shopping_cart)'
+        url_path='(?P<action_type>favorite|shopping_cart)'
     )
-    def add_to_list(self, request, pk=None, type=None):
+    def add_to_list(self, request, pk=None, action_type=None):
         """Добавление рецепта в избранное или список покупок."""
         recipe = get_object_or_404(Recipe, id=pk)
-        if type == 'shopping_cart':
+        if action_type == 'shopping_cart':
             serializer_class = CartItemsSerializer
-        elif type == 'favorite':
+        elif action_type == 'favorite':
             serializer_class = FavoriteItemsSerializer
         else:
             return Response(
@@ -124,34 +124,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeEditorSerializer
         return RecipeDetailSerializer
 
-    def create(self, request, *args, **kwargs):
-        editor_serializer = RecipeEditorSerializer(
-            data=request.data,
-            context={'request': request}
-        )
-        editor_serializer.is_valid(raise_exception=True)
-
-        recipe = editor_serializer.save()
-
-        detail_serializer = RecipeDetailSerializer(
-            recipe,
-            context={'request': request}
-        )
-
-        headers = self.get_success_headers(detail_serializer.data)
-        return Response(
-            detail_serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers
-        )
-
     @add_to_list.mapping.delete
-    def remove_from_list(self, request, pk=None, type=None):
+    def remove_from_list(self, request, pk=None, action_type=None):
         """Удаление рецепта из избранного или списка покупок."""
         recipe = get_object_or_404(Recipe, id=pk)
-        if type == 'shopping_cart':
+        if action_type == 'shopping_cart':
             relation_model = Cart
-        elif type == 'favorite':
+        elif action_type == 'favorite':
             relation_model = Favorite
         else:
             return Response(
@@ -168,20 +147,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if 'image' in request.data and not request.data['image']:
-            return Response(
-                {'image': ['Это поле не может быть пустым']},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        serializer = self.get_serializer(
-            instance,
-            data=request.data,
-            partial=kwargs.pop('partial', False))
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # def update(self, request, *args, **kwargs):
+    #     """Обновление рецепта с дополнительной проверкой изображения."""
+    #     if 'image' in request.data and not request.data['image']:
+    #         return Response(
+    #             {'image': ['Это поле не может быть пустым']},
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #     return super().update(request, *args, **kwargs)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

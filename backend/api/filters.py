@@ -1,5 +1,6 @@
-import django_filters
 from django_filters import rest_framework as filters
+import django_filters
+
 from recipes.models import Recipe, Tag
 from rest_framework import filters as drf_filters
 
@@ -9,20 +10,22 @@ class RecipeFilter(filters.FilterSet):
     наличию в списке покупок, избранном, по тегам и автору.
     """
 
-    is_in_shopping_cart = django_filters.CharFilter(
+    is_in_shopping_cart = django_filters.BooleanFilter(
         method="filter_is_in_shopping_cart"
     )
-    is_favorited = django_filters.CharFilter(method="filter_is_favorited")
+    is_favorited = django_filters.BooleanFilter(method="filter_is_favorited")
     tags = filters.ModelMultipleChoiceFilter(
         field_name="tags__slug",
         to_field_name="slug",
         queryset=Tag.objects.all(),
     )
-    author = filters.NumberFilter(field_name='author__id')
 
     class Meta:
         model = Recipe
-        fields = ("tags", "author", "is_in_shopping_cart", "is_favorited")
+        fields = {
+            'tags': ['exact'],
+            'author': ['exact'],
+        }
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         """Фильтр по факту наличия в корзине"""

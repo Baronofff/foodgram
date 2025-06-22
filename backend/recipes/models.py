@@ -1,14 +1,14 @@
-import secrets
-import string
+from random import choices
 
 import unidecode
 from api.constants import (MAX_LENGTH_INGREDIENT_NAME,
                            MAX_LENGTH_MEASUREMENT_UNIT, MAX_LENGTH_RECIPE_NAME,
                            MAX_LENGTH_SHORT_LINK, MAX_LENGTH_TAG_NAME,
                            MAX_LENGTH_TAG_SLUG, MIN_COOKING_TIME,
-                           MIN_INGREDIENT_AMOUNT)
+                           MIN_INGREDIENT_AMOUNT, ALLOWED_CHARS)
 from autoslug import AutoSlugField
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from users.models import User
@@ -56,7 +56,9 @@ class Tag(models.Model):
     )
 
     class Meta:
-        pass
+        verbose_name = 'тег'
+        verbose_name_plural = 'теги'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -91,12 +93,11 @@ class Recipe(models.Model):
 
     def generate_short_link(self):
         "Генерирует уникальный короткий ключ"
-        length = MAX_LENGTH_SHORT_LINK
-        while True:
-            slug = ''.join(secrets.choice(
-                string.ascii_lowercase + string.digits) for _ in range(length))
-            if not Recipe.objects.filter(short_link=slug).exists():
-                return slug
+        slug = ''.join(choices(ALLOWED_CHARS, k=MAX_LENGTH_SHORT_LINK))
+        if not Recipe.objects.filter(short_link=slug).exists():
+            return slug
+        raise ValidationError("""Не удалось сгенерировать
+                                  уникальный короткий URL""")
 
     class Meta:
         """ """
@@ -160,13 +161,16 @@ class BaseChoiceModel(models.Model):
             )
         ]
         default_related_name = 'in_%(class)ss'
+        ordering = ['recipe__name']
 
 
 class Favorite(BaseChoiceModel):
     class Meta(BaseChoiceModel.Meta):
-        pass
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
 
 class Cart(BaseChoiceModel):
     class Meta(BaseChoiceModel.Meta):
-        pass
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'

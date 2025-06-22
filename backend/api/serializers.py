@@ -410,17 +410,13 @@ class RecipeMinimalSerializer(serializers.ModelSerializer):
             obj.image.url) if request else obj.image.url
 
 
-class RecipeCustomSerializer(serializers.ModelSerializer):
+class RecipeCustomSerializer(RecipeMinimalSerializer):
     """Сериализатор для кастомного отображения рецептов"""
 
     image = Base64ImageField()
 
-    class Meta:
-        model = Recipe
-        fields = ("id",
-                  "name",
-                  "image",
-                  "cooking_time")
+    class Meta(RecipeMinimalSerializer.Meta):
+        pass
 
 
 class BaseUserRecipeSerializer(serializers.ModelSerializer):
