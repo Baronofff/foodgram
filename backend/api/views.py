@@ -147,15 +147,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # def update(self, request, *args, **kwargs):
-    #     """Обновление рецепта с дополнительной проверкой изображения."""
-    #     if 'image' in request.data and not request.data['image']:
-    #         return Response(
-    #             {'image': ['Это поле не может быть пустым']},
-    #             status=status.HTTP_400_BAD_REQUEST
-    #         )
-    #     return super().update(request, *args, **kwargs)
-
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet для тегов."""

@@ -1,3 +1,7 @@
+адрес - https://foodgramcom.zapto.org
+почта - user@gmail.com
+пароль - user
+
 Foodgram - Продуктовый помощник
 
 Описание:
