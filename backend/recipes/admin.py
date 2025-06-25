@@ -44,7 +44,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if not obj.image:
-            raise ValidationError("Нельзя загрузить рецепт без изображения.")
+            raise ValidationError("Нельзя загрузить без изображения.")
         super().save_model(request, obj, form, change)
 
 
