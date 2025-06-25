@@ -56,8 +56,8 @@ class Tag(models.Model):
     )
 
     class Meta:
-        verbose_name = 'тег'
-        verbose_name_plural = 'теги'
+        verbose_name = 'Tag'
+        verbose_name_plural = 'Tags'
         ordering = ['name']
 
     def __str__(self):
@@ -166,11 +166,11 @@ class BaseChoiceModel(models.Model):
 
 class Favorite(BaseChoiceModel):
     class Meta(BaseChoiceModel.Meta):
-        verbose_name = 'Избранное'
-        verbose_name_plural = 'Избранное'
+        verbose_name = 'Favourite'
+        verbose_name_plural = 'Favourites'
 
 
 class Cart(BaseChoiceModel):
     class Meta(BaseChoiceModel.Meta):
-        verbose_name = 'Корзина'
-        verbose_name_plural = 'Корзины'
+        verbose_name = 'Cart'
+        verbose_name_plural = 'Carts'
