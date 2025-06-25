@@ -1,5 +1,5 @@
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
@@ -7,7 +7,7 @@ from recipes.models import (AmountIngredientInRecipe, Cart, Favorite,
                             Ingredient, Recipe, Tag)
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from users.models import Subscription, User
 
@@ -146,6 +146,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[AllowAny],
+        url_path='short-link-redirect'
+    )
+    def redirect_short_link(self, request, short_link=None):
+        """Перенаправление по короткой ссылке."""
+
+        recipe = get_object_or_404(Recipe, short_link=short_link)
+        return HttpResponseRedirect(f'/recipes/{recipe.pk}/')
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

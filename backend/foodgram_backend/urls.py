@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('<str:short_link>/',
          RecipeViewSet.as_view(
-             {'get': 'get_link'}), name="get_link"),
+             {'get': 'redirect_short_link'}), name="redirect_short_link"),
 ]
 
 if settings.DEBUG:
