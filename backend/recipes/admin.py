@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 
-from .models import (Ingredient, Recipe, Tag, Favorite, Cart,
+from .models import (Ingredient,
+                     Recipe,
+                     Tag,
+                     Favorite,
+                     Cart,
                      AmountIngredientInRecipe)
 
 
